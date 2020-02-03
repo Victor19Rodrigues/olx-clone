@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import useApi from "../../helpers/OlxAPI";
 import { doLogin } from "../../helpers/AuthHandler";
@@ -13,11 +13,26 @@ import {
 const Page = () => {
   const api = useApi();
 
+  const [name, setName] = useState("");
+  const [stateLocal, setStateLocal] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberPassword, setRememberPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [stateList, setStateList] = useState([]);
+
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const getStates = async () => {
+      const list = await api.getStates();
+
+      setStateList(list);
+    };
+
+    getStates();
+  }, [api]);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -25,12 +40,19 @@ const Page = () => {
     setDisabled(true);
     setError("");
 
-    const json = await api.login(email, password);
+    if (password !== confirmPassword) {
+      setError("Senhas não batem");
+      setDisabled(false);
+
+      return;
+    }
+
+    const json = await api.register(name, email, password, stateLocal);
 
     if (json.error) {
       setError(json.error);
     } else {
-      doLogin(json.token, rememberPassword);
+      doLogin(json.token);
       window.location.href = "/";
     }
 
@@ -39,11 +61,42 @@ const Page = () => {
 
   return (
     <PageContainer>
-      <PageTitle>Login</PageTitle>
+      <PageTitle>Cadastro</PageTitle>
       <PageArea>
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <form onSubmit={handleSubmit}>
+          <label className="area">
+            <div className="area--title">Nome Completo</div>
+            <div className="area--input">
+              <input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                type="text"
+                name="name"
+                id="name"
+                disabled={disabled}
+                required
+              />
+            </div>
+          </label>
+          <label className="area">
+            <div className="area--title">Estado</div>
+            <div className="area--input">
+              <select
+                value={stateLocal}
+                onChange={e => setStateLocal(e.target.value)}
+                required
+              >
+                <option></option>
+                {stateList.map(state => (
+                  <option key={state._id} value={state._id}>
+                    {state.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
           <label className="area">
             <div className="area--title">E-mail</div>
             <div className="area--input">
@@ -73,20 +126,23 @@ const Page = () => {
             </div>
           </label>
           <label className="area">
-            <div className="area--title">Lembrar Senha</div>
+            <div className="area--title">Confirmar Senha</div>
             <div className="area--input">
               <input
-                checked={rememberPassword}
-                onChange={() => setRememberPassword(!rememberPassword)}
-                type="checkbox"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                type="password"
+                name="confirm-password"
+                id="confirm-password"
                 disabled={disabled}
+                required
               />
             </div>
           </label>
           <label className="area">
             <div className="area--title"></div>
             <div className="area--input">
-              <button disabled={disabled}>Login</button>
+              <button disabled={disabled}>Cadastrar</button>
             </div>
           </label>
         </form>
