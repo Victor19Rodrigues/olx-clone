@@ -9,3 +9,7 @@ body {
   font-family: 'Roboto', sans-serif;
   background-color: #EEE;
 }
+
+input {
+  outline: 0;
+}
