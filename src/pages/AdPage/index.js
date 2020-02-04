@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import pt from "date-fns/locale/pt-BR";
+import { Slide } from "react-slideshow-image";
 
 import useApi from "../../helpers/OlxAPI";
 
@@ -32,7 +33,18 @@ const Page = () => {
       <PageArea>
         <div className="leftSide">
           <div className="box">
-            <div className="adImage">{loading && <Fake height={300} />}</div>
+            <div className="adImage">
+              {loading && <Fake height={300} />}
+              {adInfo.images && 
+                <Slide>
+                  {adInfo.images.map((img, k) => (
+                    <div key={k} className="each-slide">
+                      <img src={img} alt="" />
+                    </div>
+                  ))}
+                </Slide>
+              }
+            </div>
             <div className="ad-info">
               <div className="adName">
                 {loading && <Fake height={20} />}
@@ -53,9 +65,7 @@ const Page = () => {
                 {adInfo.description}
 
                 <hr />
-                {adInfo.views && 
-                  <small>Visualizações: {adInfo.views}</small>
-                }
+                {adInfo.views && <small>Visualizações: {adInfo.views}</small>}
               </div>
             </div>
           </div>
