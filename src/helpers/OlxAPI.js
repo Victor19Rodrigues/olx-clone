@@ -25,6 +25,12 @@ const OlxAPI = {
     const response = await apiFetchGet("/states");
 
     return response.states;
+  },
+
+  getCategories: async () => {
+    const response = await apiFetchGet("/categories");
+
+    return response.categories;
   }
 };
 
