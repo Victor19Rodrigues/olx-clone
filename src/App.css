@@ -10,6 +10,6 @@ body {
   background-color: #EEE;
 }
 
-input, textarea {
+input, textarea, select {
   outline: 0;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import useApi from "../../helpers/OlxAPI";
 
@@ -10,6 +10,20 @@ import { PageArea } from "./styled";
 
 const Page = () => {
   const api = useApi();
+
+  const useQueryString = () => {
+    return new URLSearchParams(useLocation().search);
+  };
+
+  const query = useQueryString();
+
+  const [q, setQ] = useState(query.get("q") != null ? query.get("q") : "");
+  const [cat, setCat] = useState(
+    query.get("cat") != null ? query.get("cat") : ""
+  );
+  const [state, setState] = useState(
+    query.get("state") != null ? query.get("state") : ""
+  );
 
   const [stateList, setStateList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -53,10 +67,15 @@ const Page = () => {
       <PageArea>
         <div className="leftSide">
           <form action="" method="get">
-            <input type="text" name="q" id="" />
+            <input
+              value={q}
+              type="text"
+              name="q"
+              placeholder="O que você procura?"
+            />
 
             <div className="filterName">Estado:</div>
-            <select name="state">
+            <select name="state" value={state}>
               <option></option>
               {stateList &&
                 stateList.map((state, k) => (
@@ -70,7 +89,14 @@ const Page = () => {
             <ul>
               {categories &&
                 categories.map((category, k) => (
-                  <li key={k} className="categoryItem">
+                  <li
+                    key={k}
+                    className={
+                      cat === category.slug
+                        ? "categoryItem active"
+                        : "categoryItem"
+                    }
+                  >
                     <img src={category.img} alt="" />
                     <span>{category.name}</span>
                   </li>
