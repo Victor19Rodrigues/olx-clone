@@ -10,6 +10,6 @@ body {
   background-color: #EEE;
 }
 
-input {
+input, textarea {
   outline: 0;
 }
