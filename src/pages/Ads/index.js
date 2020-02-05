@@ -8,6 +8,8 @@ import AdItem from "../../components/partials/AdItem";
 
 import { PageArea } from "./styled";
 
+let timer;
+
 const Page = () => {
   const api = useApi();
   const history = useHistory();
@@ -30,6 +32,21 @@ const Page = () => {
   const [categories, setCategories] = useState([]);
   const [adList, setAdList] = useState([]);
 
+  const [resultOpacity, setResultOpacity] = useState(1);
+
+  const getAdsList = async () => {
+    const json = await api.getAds({
+      sort: "desc",
+      limit: 9,
+      q,
+      cat,
+      state
+    });
+
+    setAdList(json.ads);
+    setResultOpacity(1);
+  };
+
   useEffect(() => {
     let queryString = [];
 
@@ -48,6 +65,13 @@ const Page = () => {
     history.replace({
       search: `?${queryString.join("&")}`
     });
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(getAdsList, 2000);
+    setResultOpacity(0.3);
   }, [q, cat, state, history]);
 
   useEffect(() => {
@@ -68,19 +92,6 @@ const Page = () => {
     };
 
     getCategories();
-  }, [api]);
-
-  useEffect(() => {
-    const getRecentAds = async () => {
-      const json = await api.getAds({
-        sort: "desc",
-        limit: 8
-      });
-
-      setAdList(json.ads);
-    };
-
-    getRecentAds();
   }, [api]);
 
   return (
@@ -131,7 +142,14 @@ const Page = () => {
             </ul>
           </form>
         </div>
-        <div className="rightSide">...</div>
+        <div className="rightSide">
+          <h2>Resultados</h2>
+          <div className="list" style={{ opacity: resultOpacity }}>
+            {adList.map((list, k) => (
+              <AdItem key={k} data={list} />
+            ))}
+          </div>
+        </div>
       </PageArea>
     </PageContainer>
   );

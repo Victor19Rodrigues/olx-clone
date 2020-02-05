@@ -60,5 +60,19 @@ export const PageArea = styled.div`
 
   .rightSide {
     flex: 1;
+
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .list {
+      display: flex;
+      flex-wrap: wrap;
+
+      .aditem {
+        width: 33%;
+      }
+    }
   }
 `;
