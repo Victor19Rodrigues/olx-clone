@@ -33,11 +33,14 @@ export const PageArea = styled.div`
           border: 1px solid #ddd;
           border-radius: 3px;
           transition: all ease 0.4s;
-
           &:focus {
             border: 1px solid #333;
             color: #333;
           }
+        }
+
+        select {
+          background-color: #fff;
         }
 
         input[type="checkbox"] {
