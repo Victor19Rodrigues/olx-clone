@@ -70,6 +70,7 @@ const Page = () => {
   useEffect(() => {
     setResultOpacity(0.3);
     getAdsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   useEffect(() => {
@@ -98,6 +99,7 @@ const Page = () => {
     timer = setTimeout(getAdsList, 2000);
     setResultOpacity(0.3);
     setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, cat, state, history]);
 
   useEffect(() => {
